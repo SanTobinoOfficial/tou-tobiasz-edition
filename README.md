@@ -98,6 +98,12 @@ Zero interwencji z Twojej strony.
 
 ## Changelog
 
+### v1.0.6 — 2026-06-29
+- Piekny instalator TUI ze spinnerem pobierania i ramkami w stylu OpenCode
+- Menu nawigowane strzalkami (strzalki gora/dol + Enter) — wybor launchera i folderu
+- Domyslna lokalizacja zmieniona na Pulpit zamiast C:\Games
+- Tryb -Silent (Zainstaluj.bat): zero pytan, pelna automatyzacja
+
 ### v1.0.5 — 2026-06-29
 - Naprawa krytycznego bledu: ZIP bez podfolderu kopiowal caly dysk C:\ do folderu gry
 - Bezpieczne wyodrebnianie archiwum — null-safe $src, kopiowanie z wlasciwego podfolderu

@@ -1,167 +1,262 @@
-# ToU Tobiasz Edition - Autoinstalator
-# Normalnie: pytania o launcher i folder
-# Silent:    zero pytan, domyslne opcje (uzyj z Zainstaluj.bat)
-
+# ToU Tobiasz Edition — Autoinstalator
 param([switch]$Silent)
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference    = "SilentlyContinue"
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
 
-$REPO      = "SanTobinoOfficial/tou-tobiasz-edition"
-$GAME_NAME = "Among Us - Tobiasz Edition"
-$TOU_URL   = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.3/TouMirav1.6.3-x86-steam-itch.zip"
-$API_URL   = "https://api.github.com/repos/$REPO/releases/latest"
-$TMP       = "$env:TEMP\TouInstall_$(Get-Random)"
+$REPO        = "SanTobinoOfficial/tou-tobiasz-edition"
+$GAME_NAME   = "Among Us - Tobiasz Edition"
+$TOU_URL     = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.3/TouMirav1.6.3-x86-steam-itch.zip"
+$API_URL     = "https://api.github.com/repos/$REPO/releases/latest"
+$TMP         = "$env:TEMP\TouInstall_$(Get-Random)"
 $CONFIG_DIR  = "$env:LOCALAPPDATA\TouTobiaszEdition"
 $CONFIG_FILE = "$CONFIG_DIR\install_path.txt"
-
-$STEAM_DIR = "C:\Program Files (x86)\Steam\steamapps\common\Among Us"
-$EPIC_DIRS = @(
-    "C:\Program Files\Epic Games\Among Us",
+$STEAM_DIR   = "C:\Program Files (x86)\Steam\steamapps\common\Among Us"
+$EPIC_DIRS   = @(
+    "C:\Program Files\Epic Games\Among Us"
     "C:\Program Files (x86)\Epic Games\Among Us"
 )
+$DESKTOP = [Environment]::GetFolderPath('Desktop')
 
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  ToU Tobiasz Edition - Instalator" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
+# ── UI prymitywy ────────────────────────────────────────────────────────────
+function ln  { Write-Host "" }
+function ok($m)  { Write-Host "  ✓  $m" -ForegroundColor Green }
+function er($m)  { Write-Host "  ✗  $m" -ForegroundColor Red }
+function inf($m) { Write-Host "  ·  $m" -ForegroundColor DarkGray }
+function hi($t, $c = "White") { Write-Host $t -ForegroundColor $c }
 
-# --- Wykryj Among Us ---
+function header {
+    $s = "═" * 60
+    hi "╔$s╗" Cyan
+    hi "║$("  ToU Tobiasz Edition".PadRight(60))║" Cyan
+    hi "║$("  Instalator v1.0.6".PadRight(60))║" DarkCyan
+    hi "╠$s╣" DarkCyan
+    $os   = try { (Get-CimInstance Win32_OperatingSystem).Caption } catch { "Windows" }
+    $mode = if ($Silent) { "Automatyczny (zero pytan)" } else { "Interaktywny  ↑↓ = nawigacja  Enter = wybor" }
+    hi "║$("  Platforma : $os".PadRight(60))║" DarkGray
+    hi "║$("  Tryb      : $mode".PadRight(60))║" DarkGray
+    hi "╚$s╝" Cyan
+    ln
+}
+
+function step($n, $t, $title) {
+    ln
+    hi "  $("─" * 58)" DarkCyan
+    hi "  $n/$t  $title" White
+    hi "  $("─" * 58)" DarkCyan
+    ln
+}
+
+# TUI menu ze strzalkami — zwraca wybrany indeks
+function menu($prompt, $options, $default = 0) {
+    inf $prompt
+    $sel   = $default
+    $count = $options.Count
+
+    # kursor ukryty podczas nawigacji
+    try { [Console]::CursorVisible = $false } catch {}
+
+    # render wszystkich opcji
+    $startRow = [Console]::CursorTop
+    foreach ($i in 0..($count - 1)) {
+        $isDefault = ($i -eq $default)
+        $tag       = if ($isDefault) { " (domyslne)" } else { "" }
+        if ($i -eq $sel) {
+            hi ("  ❯  " + $options[$i] + $tag) Cyan
+        } else {
+            hi ("     " + $options[$i] + $tag) DarkGray
+        }
+    }
+
+    :loop while ($true) {
+        $k = [Console]::ReadKey($true)
+        switch ($k.Key) {
+            "UpArrow"   { if ($sel -gt 0)          { $sel-- } }
+            "DownArrow" { if ($sel -lt $count - 1) { $sel++ } }
+            "Enter"     { break loop }
+            "Escape"    { $sel = $default; break loop }
+        }
+        # przerysuj
+        [Console]::SetCursorPosition(0, $startRow)
+        foreach ($i in 0..($count - 1)) {
+            $isDefault = ($i -eq $default)
+            $tag       = if ($isDefault) { " (domyslne)" } else { "" }
+            $pad       = " " * 6
+            if ($i -eq $sel) {
+                hi ("  ❯  " + $options[$i] + $tag + $pad) Cyan
+            } else {
+                hi ("     " + $options[$i] + $tag + $pad) DarkGray
+            }
+        }
+    }
+
+    # zamien menu na pojedyncza linie z wynikiem
+    [Console]::SetCursorPosition(0, $startRow)
+    for ($i = 0; $i -lt $count; $i++) { Write-Host (" " * 78) }
+    [Console]::SetCursorPosition(0, $startRow)
+    ok $options[$sel]
+    try { [Console]::CursorVisible = $true } catch {}
+
+    return $sel
+}
+
+# pobieranie z animowanym spinnerem
+function dl($url, $out, $label) {
+    $spin = '⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'
+    $j = Start-Job {
+        param($u,$f)
+        $ProgressPreference = "SilentlyContinue"
+        Invoke-WebRequest -Uri $u -OutFile $f -UseBasicParsing
+    } -ArgumentList $url,$out
+    $i = 0
+    try { $row = [Console]::CursorTop } catch { $row = -1 }
+    while ($j.State -eq 'Running') {
+        $kb = if (Test-Path $out) { "$([math]::Round((Get-Item $out -EA 0).Length / 1KB)) KB" } else { "..." }
+        if ($row -ge 0) {
+            [Console]::SetCursorPosition(0, $row)
+            Write-Host ("  $($spin[$i % 10])  $label  [$kb]" + " " * 10) -ForegroundColor DarkCyan -NoNewline
+        }
+        Start-Sleep -Milliseconds 80
+        $i++
+    }
+    Receive-Job $j -ErrorAction Stop | Out-Null
+    Remove-Job $j
+    if ($row -ge 0) {
+        [Console]::SetCursorPosition(0, $row); Write-Host (" " * 76)
+        [Console]::SetCursorPosition(0, $row)
+    }
+    ok "$label  ($([math]::Round((Get-Item $out).Length / 1KB)) KB)"
+}
+
+function finish($ver, $dir) {
+    ln
+    $s   = "═" * 60
+    $exe = if ($dir.Length -gt 44) { "..." + $dir.Substring($dir.Length - 41) } else { $dir }
+    hi "╔$s╗" Green
+    hi "║$("  ✓  Instalacja zakonczona pomyslnie!".PadRight(60))║" Green
+    hi "╠$s╣" DarkGreen
+    hi "║$("  Wersja moda  :  $ver".PadRight(60))║" White
+    hi "║$("  Folder gry   :  $exe".PadRight(60))║" Cyan
+    hi "║$(" " * 60)║" DarkGreen
+    hi "║$("  Uruchamiaj .exe bezposrednio — NIE przez Steam/Epic!".PadRight(60))║" Yellow
+    hi "╚$s╝" Green
+    ln
+}
+
+# ── MAIN ───────────────────────────────────────────────────────────────────
+Clear-Host
+header
+
+# 1 — wykryj grę
+step 1 5 "Wykrywanie Among Us"
+
 $steamOk = Test-Path "$STEAM_DIR\Among Us.exe"
 $epicDir  = $EPIC_DIRS | Where-Object { Test-Path "$_\Among Us.exe" } | Select-Object -First 1
 $epicOk   = $null -ne $epicDir
 
 if (-not $steamOk -and -not $epicOk) {
-    Write-Host "[BLAD] Nie znaleziono Among Us ani w Steam ani w Epic Games." -ForegroundColor Red
-    Write-Host "Zainstaluj Among Us przez Steam lub Epic i sprobuj ponownie." -ForegroundColor Yellow
-    if (-not $Silent) { Read-Host "Nacisnij Enter aby wyjsc" }
-    exit 1
+    er "Nie znaleziono Among Us (Steam ani Epic)"
+    inf "Zainstaluj Among Us przez Steam lub Epic i sprobuj ponownie."
+    ln; if (-not $Silent) { $null = [Console]::ReadKey($true) }; exit 1
 }
 
-# --- Wybor launchera ---
 $SOURCE_DIR = $null
 if ($steamOk -and $epicOk -and -not $Silent) {
-    Write-Host "Znaleziono Among Us w obu launcherach:" -ForegroundColor Cyan
-    Write-Host "  [1] Steam - $STEAM_DIR" -ForegroundColor White
-    Write-Host "  [2] Epic  - $epicDir" -ForegroundColor White
-    Write-Host ""
-    do { $choice = Read-Host "Ktora kopie skopiowac? (1/2)" }
-    while ($choice -ne "1" -and $choice -ne "2")
-    $SOURCE_DIR = if ($choice -eq "1") { $STEAM_DIR } else { $epicDir }
-}
-elseif ($steamOk) {
-    $SOURCE_DIR = $STEAM_DIR
-    Write-Host "Znaleziono Among Us (Steam)" -ForegroundColor Green
-}
-else {
-    $SOURCE_DIR = $epicDir
-    Write-Host "Znaleziono Among Us (Epic)" -ForegroundColor Green
+    $idx = menu "Znaleziono Among Us w Steam i Epic — wybierz kopie:" @(
+        "Steam   →  $STEAM_DIR"
+        "Epic    →  $epicDir"
+    ) 0
+    $SOURCE_DIR = if ($idx -eq 0) { $STEAM_DIR } else { $epicDir }
+} elseif ($steamOk) {
+    $SOURCE_DIR = $STEAM_DIR; ok "Among Us (Steam) — $STEAM_DIR"
+} else {
+    $SOURCE_DIR = $epicDir;   ok "Among Us (Epic) — $epicDir"
 }
 
-# --- Wybor folderu instalacji ---
-$DESKTOP = [System.Environment]::GetFolderPath('Desktop')
-$INSTALL_DIR = "C:\Games\$GAME_NAME"
+# 2 — folder instalacji
+step 2 5 "Folder instalacji"
+
+$INSTALL_DIR = "$DESKTOP\$GAME_NAME"   # <— domyslnie: Pulpit
 
 if (-not $Silent) {
-    Write-Host ""
-    Write-Host "Gdzie zainstalowac mod?" -ForegroundColor Cyan
-    Write-Host "  [1] C:\Games\$GAME_NAME  (domyslne - ENTER)" -ForegroundColor White
-    Write-Host "  [2] Pulpit" -ForegroundColor White
-    Write-Host "  [3] Inna lokalizacja" -ForegroundColor White
-    Write-Host ""
-    $destChoice = Read-Host "Wybor (1/2/3 lub ENTER = domyslne)"
-    if ($destChoice -eq "2") { $INSTALL_DIR = "$DESKTOP\$GAME_NAME" }
-    elseif ($destChoice -eq "3") {
-        do { $customPath = (Read-Host "Podaj sciezke").Trim().Trim('"') }
-        while ([string]::IsNullOrWhiteSpace($customPath))
-        $INSTALL_DIR = $customPath
+    $idx = menu "Gdzie zainstalowac moda?" @(
+        "Pulpit         →  $DESKTOP\$GAME_NAME"
+        "Folder Games   →  C:\Games\$GAME_NAME"
+        "Wlasna sciezka →  wpisz recznie"
+    ) 0
+    switch ($idx) {
+        0 { $INSTALL_DIR = "$DESKTOP\$GAME_NAME" }
+        1 { $INSTALL_DIR = "C:\Games\$GAME_NAME" }
+        2 {
+            ln
+            do { $p = (Read-Host "  Sciezka instalacji").Trim().Trim('"') } while ([string]::IsNullOrWhiteSpace($p))
+            $INSTALL_DIR = $p
+        }
     }
+} else {
+    ok "Pulpit — $INSTALL_DIR"
 }
-
-Write-Host ""
-Write-Host "Folder instalacji: $INSTALL_DIR" -ForegroundColor Green
-Write-Host ""
 
 New-Item -ItemType Directory -Path $CONFIG_DIR -Force | Out-Null
 Set-Content -Path $CONFIG_FILE -Value $INSTALL_DIR -Encoding UTF8
 
-# 1 - Kopiuj Among Us
-Write-Host "[1/5] Kopiowanie Among Us..." -ForegroundColor Yellow
-New-Item -ItemType Directory -Path $INSTALL_DIR -Force | Out-Null
-Copy-Item "$SOURCE_DIR\*" $INSTALL_DIR -Recurse -Force
-Write-Host "      OK" -ForegroundColor Green
+# 3 — kopiuj Among Us
+step 3 5 "Kopiowanie Among Us"
 
-# 2 - Pobierz i zainstaluj TOU:Mira
-Write-Host "[2/5] Pobieranie Town of Us: Mira 1.6.3..." -ForegroundColor Yellow
+New-Item -ItemType Directory -Path $INSTALL_DIR -Force | Out-Null
+inf "Kopiowanie plików gry (moze potrwac chwile)..."
+Copy-Item "$SOURCE_DIR\*" $INSTALL_DIR -Recurse -Force
+$count = (Get-ChildItem $INSTALL_DIR -Recurse -File).Count
+ok "Skopiowano $count plików"
+
+# 4 — TOU:Mira
+step 4 5 "Town of Us: Mira 1.6.3"
+
 New-Item -ItemType Directory -Path $TMP -Force | Out-Null
 $zipPath     = "$TMP\toumira.zip"
 $extractPath = "$TMP\toumira"
-Invoke-WebRequest -Uri $TOU_URL -OutFile $zipPath -UseBasicParsing
+dl $TOU_URL $zipPath "TouMirav1.6.3-x86-steam-itch.zip"
+inf "Rozpakowywanie..."
 Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
-
-# Kopiuj z podfolderu jesli istnieje, albo bezposrednio z folderu ekstrakcji
 $subDir = Get-ChildItem $extractPath -Directory | Select-Object -First 1
 $src    = if ($null -ne $subDir) { $subDir.FullName } else { $extractPath }
 Copy-Item "$src\*" $INSTALL_DIR -Recurse -Force
-Write-Host "      OK" -ForegroundColor Green
+ok "TOU:Mira zainstalowany"
 
-# 3 - Pobierz mod DLL
-Write-Host "[3/5] Pobieranie ToU Tobiasz Edition..." -ForegroundColor Yellow
+# 5 — mod DLL + updater
+step 5 5 "ToU Tobiasz Edition + auto-updater"
+
 try {
-    $release       = Invoke-RestMethod -Uri $API_URL -UseBasicParsing -Headers @{ "User-Agent" = "TouTobiaszInstaller/1.0" }
-    $latestVersion = $release.tag_name.Trim()
-} catch {
-    $latestVersion = "v1.0.4"
-}
+    $rel = Invoke-RestMethod -Uri $API_URL -UseBasicParsing -Headers @{ "User-Agent" = "TouTobiaszInstaller/1.0" }
+    $ver = $rel.tag_name.Trim()
+} catch { $ver = "v1.0.6" }
 
 $pluginsDir = "$INSTALL_DIR\BepInEx\plugins"
 New-Item -ItemType Directory -Path $pluginsDir -Force | Out-Null
-$modUrl = "https://github.com/$REPO/releases/download/$latestVersion/TouTobiaszEdition.dll"
-Invoke-WebRequest -Uri $modUrl -OutFile "$pluginsDir\TouTobiaszEdition.dll" -UseBasicParsing
-Set-Content -Path "$INSTALL_DIR\tou_version.txt" -Value $latestVersion -Encoding UTF8
-Write-Host "      OK ($latestVersion)" -ForegroundColor Green
+dl "https://github.com/$REPO/releases/download/$ver/TouTobiaszEdition.dll" `
+   "$pluginsDir\TouTobiaszEdition.dll" "TouTobiaszEdition.dll"
+Set-Content -Path "$INSTALL_DIR\tou_version.txt" -Value $ver -Encoding UTF8
 
-# 4 - Auto-updater
-Write-Host "[4/5] Konfigurowanie automatycznych aktualizacji..." -ForegroundColor Yellow
-$updaterTarget = "$INSTALL_DIR\update.ps1"
-$updaterUrl    = "https://github.com/$REPO/releases/download/$latestVersion/update.ps1"
-try {
-    Invoke-WebRequest -Uri $updaterUrl -OutFile $updaterTarget -UseBasicParsing
-} catch {
-    $localUpdater = Join-Path (Split-Path $MyInvocation.MyCommand.Path) "update.ps1"
-    if (Test-Path $localUpdater) { Copy-Item $localUpdater $updaterTarget -Force }
+$upd = "$INSTALL_DIR\update.ps1"
+try { Invoke-WebRequest -Uri "https://github.com/$REPO/releases/download/$ver/update.ps1" -OutFile $upd -UseBasicParsing } catch {}
+Set-Content -Path "$INSTALL_DIR\Sprawdz aktualizacje.bat" `
+    -Value "@echo off`r`npowershell.exe -ExecutionPolicy Bypass -WindowStyle Normal -File ""%~dp0update.ps1"" -Manual`r`n" `
+    -Encoding ASCII
+
+if (Test-Path $upd) {
+    $tn  = "ToU Tobiasz Edition Updater"
+    $act = New-ScheduledTaskAction -Execute "powershell.exe" `
+           -Argument "-WindowStyle Hidden -NonInteractive -ExecutionPolicy Bypass -File `"$upd`""
+    $trg = New-ScheduledTaskTrigger -AtLogon -User $env:USERNAME
+    $set = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Minutes 5) `
+           -StartWhenAvailable -MultipleInstances IgnoreNew
+    Unregister-ScheduledTask -TaskName $tn -Confirm:$false -EA SilentlyContinue
+    Register-ScheduledTask -TaskName $tn -Action $act -Trigger $trg -Settings $set -RunLevel Limited -Force | Out-Null
+    ok "Auto-updater zarejestrowany (Task Scheduler)"
 }
 
-$checkBat = "$INSTALL_DIR\Sprawdz aktualizacje.bat"
-Set-Content -Path $checkBat -Value "@echo off`r`npowershell.exe -ExecutionPolicy Bypass -WindowStyle Normal -File ""%~dp0update.ps1"" -Manual`r`n" -Encoding ASCII
+Remove-Item $TMP -Recurse -Force -EA SilentlyContinue
 
-if (Test-Path $updaterTarget) {
-    $taskName = "ToU Tobiasz Edition Updater"
-    $action   = New-ScheduledTaskAction -Execute "powershell.exe" `
-        -Argument "-WindowStyle Hidden -NonInteractive -ExecutionPolicy Bypass -File `"$updaterTarget`""
-    $trigger  = New-ScheduledTaskTrigger -AtLogon -User $env:USERNAME
-    $settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Minutes 5) `
-        -StartWhenAvailable -MultipleInstances IgnoreNew
-    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
-    Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger `
-        -Settings $settings -RunLevel Limited -Force | Out-Null
-    Write-Host "      OK" -ForegroundColor Green
-}
-
-# 5 - Sprzatanie
-Write-Host "[5/5] Czyszczenie..." -ForegroundColor Yellow
-Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue
-Write-Host "      OK" -ForegroundColor Green
-
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Green
-Write-Host "  Instalacja zakonczona!" -ForegroundColor Green
-Write-Host "========================================" -ForegroundColor Green
-Write-Host ""
-Write-Host "Wersja     : $latestVersion" -ForegroundColor White
-Write-Host "Gra        : $INSTALL_DIR\Among Us.exe" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "WAZNE: Uruchamiaj bezposrednio .exe, NIE przez Steam/Epic!" -ForegroundColor Yellow
-Write-Host ""
-if (-not $Silent) { Read-Host "Nacisnij Enter aby wyjsc" }
+finish $ver $INSTALL_DIR
+if (-not $Silent) { $null = [Console]::ReadKey($true) }
