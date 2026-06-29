@@ -4,12 +4,15 @@
 $ErrorActionPreference = "Stop"
 $ProgressPreference    = "SilentlyContinue"
 
-$REPO        = "SanTobinoOfficial/tou-tobiasz-edition"
-$GAME_NAME   = "Among Us - Tobiasz Edition"
-$INSTALL_DIR = "C:\Games\$GAME_NAME"
-$TOU_URL     = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.3/TouMirav1.6.3-x86-steam-itch.zip"
-$API_URL     = "https://api.github.com/repos/$REPO/releases/latest"
-$TMP         = "$env:TEMP\TouInstall"
+$REPO      = "SanTobinoOfficial/tou-tobiasz-edition"
+$GAME_NAME = "Among Us - Tobiasz Edition"
+$TOU_URL   = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.3/TouMirav1.6.3-x86-steam-itch.zip"
+$API_URL   = "https://api.github.com/repos/$REPO/releases/latest"
+$TMP       = "$env:TEMP\TouInstall"
+
+# Plik z zapisana sciezka instalacji (czyta go update.ps1)
+$CONFIG_DIR  = "$env:LOCALAPPDATA\TouTobiaszEdition"
+$CONFIG_FILE = "$CONFIG_DIR\install_path.txt"
 
 # Znane lokalizacje Among Us
 $STEAM_DIR = "C:\Program Files (x86)\Steam\steamapps\common\Among Us"
@@ -25,7 +28,7 @@ Write-Host "  ToU Tobiasz Edition - Instalator" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# --- Wykryj lokalizacje Among Us ---
+# --- 0a. Wykryj lokalizacje Among Us ---
 $steamOk = Test-Path "$STEAM_DIR\Among Us.exe"
 $epicDir  = $EPIC_DIRS | Where-Object { Test-Path "$_\Among Us.exe" } | Select-Object -First 1
 $epicOk   = $null -ne $epicDir
@@ -33,30 +36,27 @@ $epicOk   = $null -ne $epicDir
 if (-not $steamOk -and -not $epicOk) {
     Write-Host "[BLAD] Nie znaleziono Among Us ani w Steam ani w Epic Games." -ForegroundColor Red
     Write-Host ""
-    Write-Host "Sprawdzone lokalizacje Steam:" -ForegroundColor Yellow
+    Write-Host "Sprawdzone sciezki Steam:" -ForegroundColor Yellow
     Write-Host "  $STEAM_DIR" -ForegroundColor DarkYellow
-    Write-Host "Sprawdzone lokalizacje Epic:" -ForegroundColor Yellow
+    Write-Host "Sprawdzone sciezki Epic:" -ForegroundColor Yellow
     $EPIC_DIRS | ForEach-Object { Write-Host "  $_" -ForegroundColor DarkYellow }
     Write-Host ""
-    Write-Host "Zainstaluj Among Us przez Steam lub Epic Games i sprobuj ponownie." -ForegroundColor Yellow
+    Write-Host "Zainstaluj Among Us przez Steam lub Epic i sprobuj ponownie." -ForegroundColor Yellow
     Read-Host "Nacisnij Enter aby wyjsc"
     exit 1
 }
 
-# Wybor zrodla jesli oba sa dostepne
+# --- 0b. Wybor launchera (jesli oba) ---
 $SOURCE_DIR = $null
 
 if ($steamOk -and $epicOk) {
     Write-Host "Znaleziono Among Us w obu launcherach:" -ForegroundColor Cyan
-    Write-Host "  [1] Steam  - $STEAM_DIR" -ForegroundColor White
-    Write-Host "  [2] Epic   - $epicDir" -ForegroundColor White
+    Write-Host "  [1] Steam - $STEAM_DIR" -ForegroundColor White
+    Write-Host "  [2] Epic  - $epicDir" -ForegroundColor White
     Write-Host ""
-    do {
-        $choice = Read-Host "Ktora kopie skopiowac? (1/2)"
-    } while ($choice -ne "1" -and $choice -ne "2")
-
-    if ($choice -eq "1") { $SOURCE_DIR = $STEAM_DIR }
-    else                  { $SOURCE_DIR = $epicDir   }
+    do { $choice = Read-Host "Ktora kopie skopiowac? (1/2)" }
+    while ($choice -ne "1" -and $choice -ne "2")
+    if ($choice -eq "1") { $SOURCE_DIR = $STEAM_DIR } else { $SOURCE_DIR = $epicDir }
 }
 elseif ($steamOk) {
     $SOURCE_DIR = $STEAM_DIR
@@ -66,7 +66,38 @@ else {
     $SOURCE_DIR = $epicDir
     Write-Host "Znaleziono Among Us (Epic): $SOURCE_DIR" -ForegroundColor Green
 }
+
+# --- 0c. Wybor folderu instalacji ---
 Write-Host ""
+$DESKTOP = [System.Environment]::GetFolderPath('Desktop')
+Write-Host "Gdzie zainstalowac mod?" -ForegroundColor Cyan
+Write-Host "  [1] C:\Games\$GAME_NAME  (domyslne)" -ForegroundColor White
+Write-Host "  [2] Pulpit - $DESKTOP\$GAME_NAME" -ForegroundColor White
+Write-Host "  [3] Inna lokalizacja (wpisz sam)" -ForegroundColor White
+Write-Host ""
+
+do { $destChoice = Read-Host "Wybor (1/2/3)" }
+while ($destChoice -ne "1" -and $destChoice -ne "2" -and $destChoice -ne "3")
+
+switch ($destChoice) {
+    "1" { $INSTALL_DIR = "C:\Games\$GAME_NAME" }
+    "2" { $INSTALL_DIR = "$DESKTOP\$GAME_NAME" }
+    "3" {
+        do {
+            $customPath = Read-Host "Podaj pelna sciezke folderu (np. D:\Gry\AmongUsMod)"
+            $customPath = $customPath.Trim().Trim('"')
+        } while ([string]::IsNullOrWhiteSpace($customPath))
+        $INSTALL_DIR = $customPath
+    }
+}
+
+Write-Host ""
+Write-Host "Folder instalacji: $INSTALL_DIR" -ForegroundColor Green
+Write-Host ""
+
+# Zapisz sciezke do konfigu (update.ps1 bedzie jej uzywac)
+New-Item -ItemType Directory -Path $CONFIG_DIR -Force | Out-Null
+Set-Content -Path $CONFIG_FILE -Value $INSTALL_DIR -Encoding UTF8
 
 # 1 - Kopiuj Among Us
 Write-Host "[1/5] Kopiowanie Among Us do: $INSTALL_DIR" -ForegroundColor Yellow
@@ -115,9 +146,7 @@ try {
 }
 catch {
     $localUpdater = Join-Path (Split-Path $MyInvocation.MyCommand.Path) "update.ps1"
-    if (Test-Path $localUpdater) {
-        Copy-Item $localUpdater $updaterTarget -Force
-    }
+    if (Test-Path $localUpdater) { Copy-Item $localUpdater $updaterTarget -Force }
 }
 
 # Skrot "Sprawdz aktualizacje" w folderze gry
@@ -170,7 +199,7 @@ Write-Host "  $INSTALL_DIR\Among Us.exe" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "WAZNE: Uruchamiaj bezposrednio .exe, NIE przez Steam/Epic!" -ForegroundColor Yellow
 Write-Host ""
-Write-Host "Auto-aktualizacje : aktywne (Task Scheduler)" -ForegroundColor Green
-Write-Host "Reczna aktualizacja: 'Sprawdz aktualizacje.bat' w folderze gry" -ForegroundColor Green
+Write-Host "Auto-aktualizacje    : aktywne (Task Scheduler)" -ForegroundColor Green
+Write-Host "Reczna aktualizacja  : 'Sprawdz aktualizacje.bat' w folderze gry" -ForegroundColor Green
 Write-Host ""
 Read-Host "Nacisnij Enter aby wyjsc"

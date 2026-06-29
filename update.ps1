@@ -7,12 +7,20 @@ param([switch]$Manual)
 $ErrorActionPreference = "SilentlyContinue"
 $ProgressPreference    = "SilentlyContinue"
 
-$REPO         = "SanTobinoOfficial/tou-tobiasz-edition"
-$INSTALL_DIR  = "C:\Games\Among Us - Tobiasz Edition"
+$REPO        = "SanTobinoOfficial/tou-tobiasz-edition"
+$DLL_NAME    = "TouTobiaszEdition.dll"
+$API_URL     = "https://api.github.com/repos/$REPO/releases/latest"
+$CONFIG_FILE = "$env:LOCALAPPDATA\TouTobiaszEdition\install_path.txt"
+
+# Ustal sciezke instalacji: plik konfigu -> fallback hardcoded
+$INSTALL_DIR = "C:\Games\Among Us - Tobiasz Edition"
+if (Test-Path $CONFIG_FILE) {
+    $saved = (Get-Content $CONFIG_FILE -Raw -ErrorAction SilentlyContinue).Trim()
+    if (-not [string]::IsNullOrWhiteSpace($saved)) { $INSTALL_DIR = $saved }
+}
+
 $VERSION_FILE = "$INSTALL_DIR\tou_version.txt"
 $PLUGINS_DIR  = "$INSTALL_DIR\BepInEx\plugins"
-$DLL_NAME     = "TouTobiaszEdition.dll"
-$API_URL      = "https://api.github.com/repos/$REPO/releases/latest"
 
 function Write-Status {
     param([string]$Msg, [string]$Color = "White")
