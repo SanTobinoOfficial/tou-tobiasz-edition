@@ -1,22 +1,59 @@
-> [!NOTE]
-> This "mod" is **not** meant to be played, and is instead meant to be a framework for TOU Mira extension mods.
+# ToU Tobiasz Edition 🎮
 
------------------------
+Custom roles mod for **Among Us**, based on Town of Us: Mira.
 
-<div align="center">
-  <img src="./TouExtensionExample/Resources/ExampleBanner.png" alt="TOU Mira Example Mod"/>
-  <p>TOU Mira Example Mod</p>
-</div>
-<br/>
+## Role
 
-An example client-side [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds new roles to [Town of Us: Mira](https://github.com/AU-Avengers/TOU-Mira).
+| Rola | Drużyna | Opis |
+|------|---------|------|
+| **Emil** | Neutral | Powolny pożeracz. Musi zjeść ciała wszystkich graczy. Zabija i wraca po ciało. Wygrywam gdy wszystkie ciała są zjedzone i nie ma żywych wrogów. |
+| **Jonasz** | Crewmate | Mały i szybki. Używa ptaków do wykrywania impostorów (zielony = bezpieczny, czerwony = impostor) i Dasha do szybkiej ucieczki. |
 
-If you want a more broad example for adding roles and modifiers, you can also use [MiraAPI](https://github.com/All-Of-Us-Mods/MiraAPI)'s Example mod as a reference for all your needs.
+---
 
------------------------
-# License
-This software is distributed under the GNU GPLv3 License. BepInEx is distributed under the LGPL-2.1 License.
+## Instalacja dla znajomych ✅
 
-# Copyright
-<p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>
-<p align="center">© Innersloth LLC.</p>
+### Krok 1 — Pobierz autoinstalator
+
+👉 **[Kliknij tutaj aby pobrać install.ps1](https://github.com/SanTobinoOfficial/tou-tobiasz-edition/releases/latest/download/install.ps1)**
+
+### Krok 2 — Uruchom
+
+Kliknij **prawym przyciskiem** na `install.ps1` → **Uruchom za pomocą programu PowerShell**
+
+Skrypt automatycznie:
+- Stworzy osobną kopię Among Us (vanilla pozostaje nienaruszona!)
+- Zainstaluje Town of Us: Mira 1.6.3
+- Zainstaluje nasze role (Emil, Jonasz)
+
+### Krok 3 — Graj
+
+Uruchom `C:\Games\Among Us - Tobiasz Edition\Among Us.exe`
+
+> ⚠️ Nie uruchamiaj przez Steam — uruchamiaj `Among Us.exe` bezpośrednio z folderu gry!
+
+---
+
+## Jak działają osobne kopie
+
+```
+Steam (vanilla)          →  normalny Among Us, bez modów
+Among Us - Tobiasz Edition  →  TOU:Mira + Emil + Jonasz
+```
+
+Możesz mieć oba naraz — Steam uruchamia czystą wersję, a nasz folder ma mody.
+
+---
+
+## Dla deweloperów
+
+```bash
+git clone https://github.com/SanTobinoOfficial/tou-tobiasz-edition
+cd tou-tobiasz-edition
+dotnet build TouExtensionExample/TouExtensionExample.csproj
+```
+
+---
+
+*This mod is not affiliated with Among Us or Innersloth LLC. © Innersloth LLC.*
+*Based on [TouExtensionExample](https://github.com/AU-Avengers/TouExtensionExample) by AU-Avengers. Licensed under GNU GPLv3.*

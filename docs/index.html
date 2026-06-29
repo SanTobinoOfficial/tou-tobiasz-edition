@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToU Tobiasz Edition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0d0d1a; color: #e0e0e0; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #1a0a2e, #16213e); padding: 60px 20px; text-align: center; border-bottom: 2px solid #7c3aed; }
+  header h1 { font-size: 2.8rem; color: #a78bfa; text-shadow: 0 0 20px #7c3aed88; }
+  header p { margin-top: 12px; font-size: 1.1rem; color: #9ca3af; }
+  .badge { display: inline-block; background: #7c3aed; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; margin-top: 10px; }
+  main { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .btn { display: inline-block; background: #7c3aed; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-size: 1.1rem; font-weight: bold; margin: 8px; transition: background 0.2s; }
+  .btn:hover { background: #6d28d9; }
+  .btn.secondary { background: #1f2937; border: 1px solid #374151; }
+  .btn.secondary:hover { background: #374151; }
+  .download-box { background: #111827; border: 2px solid #7c3aed; border-radius: 12px; padding: 32px; text-align: center; margin: 32px 0; }
+  .download-box h2 { color: #a78bfa; margin-bottom: 16px; font-size: 1.6rem; }
+  .download-box p { color: #9ca3af; margin-bottom: 24px; }
+  .roles { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 32px 0; }
+  @media(max-width:600px){ .roles { grid-template-columns: 1fr; } }
+  .role-card { background: #111827; border-radius: 10px; padding: 24px; border-left: 4px solid; }
+  .role-card.neutral { border-color: #8b4513; }
+  .role-card.crew { border-color: #87ceeb; }
+  .role-card h3 { font-size: 1.3rem; margin-bottom: 8px; }
+  .role-card.neutral h3 { color: #cd853f; }
+  .role-card.crew h3 { color: #87ceeb; }
+  .role-card .team { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; margin-bottom: 10px; }
+  .role-card p { color: #9ca3af; font-size: 0.95rem; line-height: 1.5; }
+  .steps { counter-reset: step; list-style: none; margin: 20px 0; }
+  .steps li { counter-increment: step; padding: 14px 14px 14px 54px; position: relative; background: #111827; margin-bottom: 8px; border-radius: 8px; }
+  .steps li::before { content: counter(step); position: absolute; left: 14px; top: 50%; transform: translateY(-50%); background: #7c3aed; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+  .steps li::before { display: block; line-height: 28px; text-align: center; }
+  .warning { background: #1c1500; border: 1px solid #f59e0b; border-radius: 8px; padding: 14px 18px; margin: 16px 0; color: #fcd34d; font-size: 0.95rem; }
+  h2.section { font-size: 1.5rem; color: #a78bfa; margin: 40px 0 16px; border-bottom: 1px solid #1f2937; padding-bottom: 10px; }
+  code { background: #1f2937; padding: 2px 8px; border-radius: 4px; font-family: monospace; color: #60a5fa; }
+  footer { text-align: center; padding: 30px; color: #4b5563; font-size: 0.85rem; border-top: 1px solid #1f2937; margin-top: 40px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>⚗️ ToU Tobiasz Edition</h1>
+  <p>Custom roles mod dla Among Us — Town of Us: Mira</p>
+  <span class="badge">v1.0.0</span>
+</header>
+
+<main>
+  <div class="download-box">
+    <h2>📥 Pobierz Autoinstalator</h2>
+    <p>Jeden klik — instaluje wszystko automatycznie. Vanilla Among Us pozostaje nienaruszona.</p>
+    <a href="https://github.com/SanTobinoOfficial/tou-tobiasz-edition/releases/latest/download/install.ps1" class="btn">⬇️ Pobierz install.ps1</a>
+    <a href="https://github.com/SanTobinoOfficial/tou-tobiasz-edition/releases/latest" class="btn secondary">Wszystkie pliki →</a>
+  </div>
+
+  <h2 class="section">🎭 Role w modzie</h2>
+  <div class="roles">
+    <div class="role-card neutral">
+      <div class="team">Neutral Killing</div>
+      <h3>Emil</h3>
+      <p>Powolny i głodny. Zabija graczy i musi pożreć każde ciało. Zjedzone ciała znikają i nie mogą być zgłoszone. Wygrywa gdy wszystkie ciała są zjedzone.</p>
+    </div>
+    <div class="role-card crew">
+      <div class="team">Crewmate Investigative</div>
+      <h3>Jonasz</h3>
+      <p>Mały i szybki. Wysyła ptaki by wykryć impostorów (🟢 bezpieczny / 🔴 impostor). Używa Dasha by uciec w razie niebezpieczeństwa.</p>
+    </div>
+  </div>
+
+  <h2 class="section">🚀 Instalacja krok po kroku</h2>
+  <ol class="steps">
+    <li>Pobierz <strong>install.ps1</strong> klikając przycisk powyżej</li>
+    <li>Kliknij <strong>prawym przyciskiem</strong> na pobrany plik</li>
+    <li>Wybierz <strong>"Uruchom za pomocą programu PowerShell"</strong></li>
+    <li>Poczekaj aż skrypt się skończy (~2 minuty)</li>
+    <li>Uruchom <code>C:\Games\Among Us - Tobiasz Edition\Among Us.exe</code></li>
+  </ol>
+
+  <div class="warning">
+    ⚠️ <strong>Ważne:</strong> Uruchamiaj grę bezpośrednio przez <code>Among Us.exe</code> — NIE przez Steam!
+  </div>
+
+  <h2 class="section">📁 Jak działają osobne kopie</h2>
+  <ol class="steps">
+    <li><strong>Steam (vanilla)</strong> — normalny Among Us bez modów, uruchamiany przez Steam jak zawsze</li>
+    <li><strong>ToU Mira</strong> — jeśli masz zainstalowane TOU:Mira samodzielnie, to osobny folder</li>
+    <li><strong>ToU Tobiasz Edition</strong> — nasz mod w <code>C:\Games\Among Us - Tobiasz Edition\</code></li>
+  </ol>
+
+  <h2 class="section">🔗 Linki</h2>
+  <a href="https://github.com/SanTobinoOfficial/tou-tobiasz-edition" class="btn secondary">GitHub →</a>
+  <a href="https://github.com/AU-Avengers/TOU-Mira" class="btn secondary">Town of Us: Mira →</a>
+</main>
+
+<footer>
+  ToU Tobiasz Edition — nie jest powiązany z Innersloth LLC. © Innersloth LLC.<br>
+  Oparty na <a href="https://github.com/AU-Avengers/TouExtensionExample" style="color:#7c3aed">TouExtensionExample</a> — GNU GPLv3
+</footer>
+</body>
+</html>

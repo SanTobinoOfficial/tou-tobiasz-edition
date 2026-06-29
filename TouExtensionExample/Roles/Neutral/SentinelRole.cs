@@ -62,7 +62,6 @@ public sealed class SentinelRole(IntPtr cppPtr)
     {
         CanUseVent = OptionGroupSingleton<SentinelOptions>.Instance.CanVent,
         IntroSound = TouAudio.GlitchSound,
-        Icon = ExampleRoleIcons.Sentinel,
         GhostRole = (RoleTypes)RoleId.Get<NeutralGhostRole>()
     };
 

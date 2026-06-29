@@ -1,6 +1,12 @@
 bin/
 obj/
 /packages/
+packages.local/
 riderModule.iml
 /_ReSharper.Caches/
 .idea
+.vs/
+*.user
+*.suo
+*.DotSettings.user
+[Ll]ocal.props

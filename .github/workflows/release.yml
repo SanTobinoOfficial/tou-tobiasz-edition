@@ -1,0 +1,52 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore packages
+        run: dotnet restore TouExtensionExample/TouExtensionExample.csproj
+
+      - name: Build
+        run: dotnet build TouExtensionExample/TouExtensionExample.csproj -c Release --no-restore
+
+      - name: Rename DLL
+        run: |
+          copy TouExtensionExample\bin\Release\net6.0\TouExtensionExample.dll TouTobiaszEdition.dll
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "ToU Tobiasz Edition ${{ github.ref_name }}"
+          body: |
+            ## ToU Tobiasz Edition ${{ github.ref_name }}
+
+            ### Wymagania
+            - Among Us (Steam)
+            - Town of Us: Mira 1.6.3
+
+            ### Instalacja automatyczna
+            1. Pobierz `install.ps1`
+            2. Kliknij prawym → Uruchom za pomocą programu PowerShell
+
+            ### Instalacja ręczna
+            1. Pobierz `TouTobiaszEdition.dll`
+            2. Wrzuć do `BepInEx/plugins/` w folderze Among Us z TOU:Mira
+          files: |
+            TouTobiaszEdition.dll
+            install.ps1
