@@ -50,3 +50,4 @@ jobs:
           files: |
             TouTobiaszEdition.dll
             install.ps1
+            update.ps1
