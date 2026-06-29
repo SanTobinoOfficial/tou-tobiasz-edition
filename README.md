@@ -105,6 +105,10 @@ Mozna tez recznie sprawdzic aktualizacje — uruchom `Sprawdz aktualizacje.bat` 
 
 ## Changelog
 
+### v1.0.9 — 2026-06-29
+- Naprawa: okno Zainstaluj.bat zamykalo sie natychmiast po bledzie — bledy znikaly zanim mozna bylo je przeczytac
+- Dodano pause po kazdym bledzie i na koncu instalacji
+
 ### v1.0.8 — 2026-06-29
 - Naprawa: rola Adam nie pojawiala sie w grze — brakujaca wlasciwosc HasImpostorVision w AdamRole
 - Naprawa: locale nie ladowalo sie — bledny prefix zasobow w ExtensionLocale (TouExtensionExample vs TouCustomRoles)
