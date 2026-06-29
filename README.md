@@ -93,6 +93,10 @@ Zero interwencji z Twojej strony.
 
 ## Changelog
 
+### v1.0.3 — 2026-06-29
+- Naprawa bledu kompilacji roli Adam (CS0246, CS0115, CS0426)
+- Poprawny namespace Reactor dla RPC, poprawna metoda CanUse() w buttonie, NetworkedPlayerInfo w patchu wizji
+
 ### v1.0.2 — 2026-06-29
 - Nowa rola Adam (Impostor): zdolnosc Dym redukujaca widzenie pobliskim Crewmate'om do 20%
 - Dym dziala w promieniu konfigurowalnym (domyslnie 5 jednostek), trwa 8 sekund, cooldown 25s
