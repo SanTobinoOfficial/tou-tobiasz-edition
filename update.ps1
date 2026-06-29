@@ -1,6 +1,8 @@
 # ToU Tobiasz Edition - Auto-Updater
 # Uruchamiany automatycznie przez Windows Task Scheduler przy logowaniu.
-# NIE uruchamiaj recznie - plik ten jest zarzadzany przez instalator.
+# Reczne uruchomienie: "Sprawdz aktualizacje.bat" w folderze gry.
+
+param([switch]$Manual)
 
 $ErrorActionPreference = "SilentlyContinue"
 $ProgressPreference    = "SilentlyContinue"
@@ -11,6 +13,11 @@ $VERSION_FILE = "$INSTALL_DIR\tou_version.txt"
 $PLUGINS_DIR  = "$INSTALL_DIR\BepInEx\plugins"
 $DLL_NAME     = "TouTobiaszEdition.dll"
 $API_URL      = "https://api.github.com/repos/$REPO/releases/latest"
+
+function Write-Status {
+    param([string]$Msg, [string]$Color = "White")
+    if ($Manual) { Write-Host $Msg -ForegroundColor $Color }
+}
 
 function Show-Toast {
     param([string]$Title, [string]$Body)
@@ -37,8 +44,20 @@ function Show-Toast {
     catch { }
 }
 
+if ($Manual) {
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host "  ToU Tobiasz Edition - Sprawdz aktualizacje" -ForegroundColor Cyan
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host ""
+}
+
 # Sprawdz czy mod jest zainstalowany
-if (-not (Test-Path "$INSTALL_DIR\Among Us.exe")) { exit 0 }
+if (-not (Test-Path "$INSTALL_DIR\Among Us.exe")) {
+    Write-Status "[BLAD] Nie znaleziono instalacji w: $INSTALL_DIR" "Red"
+    if ($Manual) { Read-Host "Nacisnij Enter aby wyjsc" }
+    exit 0
+}
 
 # Zaladuj aktualnie zainstalowana wersje
 $currentVersion = "v0.0.0"
@@ -46,7 +65,9 @@ if (Test-Path $VERSION_FILE) {
     $currentVersion = (Get-Content $VERSION_FILE -Raw -ErrorAction SilentlyContinue).Trim()
 }
 
-# Sprawdz GitHub API
+Write-Status "Zainstalowana wersja : $currentVersion" "White"
+Write-Status "Sprawdzam GitHub..." "Yellow"
+
 try {
     $release = Invoke-RestMethod `
         -Uri $API_URL `
@@ -54,25 +75,51 @@ try {
         -Headers @{ "User-Agent" = "TouTobiaszEdition-Updater/1.0" }
 
     $latestVersion = $release.tag_name.Trim()
-    if ([string]::IsNullOrEmpty($latestVersion)) { exit 0 }
+    if ([string]::IsNullOrEmpty($latestVersion)) {
+        Write-Status "[BLAD] Nie udalo sie pobrac informacji o wersji." "Red"
+        if ($Manual) { Read-Host "Nacisnij Enter aby wyjsc" }
+        exit 0
+    }
 
-    # Jestesmy aktualni
-    if ($latestVersion -eq $currentVersion) { exit 0 }
+    Write-Status "Najnowsza wersja     : $latestVersion" "White"
 
-    # Pobierz nowy DLL
+    if ($latestVersion -eq $currentVersion) {
+        Write-Status "" "White"
+        Write-Status "Masz najnowsza wersje! Nic do zrobienia." "Green"
+        if ($Manual) { Read-Host "Nacisnij Enter aby wyjsc" }
+        exit 0
+    }
+
+    Write-Status "" "White"
+    Write-Status "Dostepna aktualizacja: $currentVersion -> $latestVersion" "Cyan"
+    Write-Status "Pobieranie..." "Yellow"
+
     $dllUrl  = "https://github.com/$REPO/releases/download/$latestVersion/$DLL_NAME"
     $tmpPath = "$env:TEMP\TouUpdate_$latestVersion.dll"
 
     Invoke-WebRequest -Uri $dllUrl -OutFile $tmpPath -UseBasicParsing
 
-    if (-not (Test-Path $tmpPath)) { exit 1 }
-    if ((Get-Item $tmpPath).Length -lt 1024) { Remove-Item $tmpPath -Force; exit 1 }
+    if (-not (Test-Path $tmpPath)) {
+        Write-Status "[BLAD] Nie udalo sie pobrac pliku." "Red"
+        if ($Manual) { Read-Host "Nacisnij Enter aby wyjsc" }
+        exit 1
+    }
+    if ((Get-Item $tmpPath).Length -lt 1024) {
+        Remove-Item $tmpPath -Force
+        Write-Status "[BLAD] Pobrany plik jest uszkodzony." "Red"
+        if ($Manual) { Read-Host "Nacisnij Enter aby wyjsc" }
+        exit 1
+    }
 
-    # Sprawdz czy Among Us nie jest uruchomiony (DLL bylby zablokowany)
+    # Sprawdz czy Among Us nie jest uruchomiony
     $gameRunning = Get-Process -Name "Among Us" -ErrorAction SilentlyContinue
     if ($gameRunning) {
-        Show-Toast "ToU Tobiasz Edition" "Dostepna aktualizacja $latestVersion. Zamknij gre, aby zainstalowac."
+        $msg = "Dostepna aktualizacja $latestVersion. Zamknij gre, aby zainstalowac."
+        Write-Status "" "White"
+        Write-Status "[!] $msg" "Yellow"
+        Show-Toast "ToU Tobiasz Edition" $msg
         Remove-Item $tmpPath -Force -ErrorAction SilentlyContinue
+        if ($Manual) { Read-Host "Nacisnij Enter aby wyjsc" }
         exit 0
     }
 
@@ -81,12 +128,17 @@ try {
     $dllPath = "$PLUGINS_DIR\$DLL_NAME"
     Move-Item -Path $tmpPath -Destination $dllPath -Force
 
-    # Zapisz nowa wersje
     Set-Content -Path $VERSION_FILE -Value $latestVersion -Encoding UTF8
 
-    Show-Toast "ToU Tobiasz Edition" "Zaktualizowano do $latestVersion! Uruchom gre, aby uzywac nowych rol."
+    $msg = "Zaktualizowano do $latestVersion! Uruchom gre, aby uzywac nowych rol."
+    Write-Status "" "White"
+    Write-Status "OK - $msg" "Green"
+    Show-Toast "ToU Tobiasz Edition" $msg
+
+    if ($Manual) { Read-Host "Nacisnij Enter aby wyjsc" }
 }
 catch {
-    # Brak internetu, GitHub niedostepny - cicha awaria
+    Write-Status "[BLAD] Brak internetu lub GitHub niedostepny." "Red"
+    if ($Manual) { Read-Host "Nacisnij Enter aby wyjsc" }
     exit 0
 }
