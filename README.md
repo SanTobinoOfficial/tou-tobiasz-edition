@@ -93,6 +93,12 @@ Zero interwencji z Twojej strony.
 
 ## Changelog
 
+### v1.0.2 — 2026-06-29
+- Nowa rola Adam (Impostor): zdolnosc Dym redukujaca widzenie pobliskim Crewmate'om do 20%
+- Dym dziala w promieniu konfigurowalnym (domyslnie 5 jednostek), trwa 8 sekund, cooldown 25s
+- Impostorzy widza przez dym normalnie
+- AdamOptions: SmokeCooldown, SmokeDuration, SmokeRadius, VisionMultiplier
+
 ### v1.0.1 — 2026-06-29
 - Nowa strona GitHub Pages w stylu Steam (dark navy, karty rol, panel pobierania)
 - Automatyczne aktualizacje przez Windows Task Scheduler

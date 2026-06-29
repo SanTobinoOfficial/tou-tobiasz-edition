@@ -12,4 +12,5 @@ public static class TouExampleColors
     public static Color Sentinel => new Color32(143, 162, 141, 255);
     public static Color Emil => new Color32(139, 69, 19, 255);
     public static Color Jonasz => new Color32(135, 206, 235, 255);
+    public static Color Adam => new Color32(70, 70, 70, 255); // dym - ciemny szary
 }
