@@ -11,10 +11,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https
 if errorlevel 1 (
     echo.
     echo  [BLAD] Brak polaczenia z internetem lub GitHub niedostepny.
-    echo  Sprawdz polaczenie i sprobuj ponownie.
     pause
     exit /b 1
 )
-echo  Uruchamianie...
-powershell -NoProfile -ExecutionPolicy Bypass -File "%TEMP%\tou_install.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%TEMP%\tou_install.ps1" -Silent
 del "%TEMP%\tou_install.ps1" 2>nul
+echo.
+echo  Gotowe! Uruchom gre z:
+echo  C:\Games\Among Us - Tobiasz Edition\Among Us.exe
+echo.
+pause
