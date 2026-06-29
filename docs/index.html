@@ -537,7 +537,7 @@ footer a:hover { color: var(--primary-hover); }
          class="btn-ghost" target="_blank" rel="noopener">Wszystkie pliki na GitHub</a>
       <hr class="panel-divider">
       <dl class="meta-list">
-        <div class="meta-row"><dt>Wersja</dt><dd>1.0.2</dd></div>
+        <div class="meta-row"><dt>Wersja</dt><dd>1.0.5</dd></div>
         <div class="meta-row"><dt>Gra bazowa</dt><dd>Among Us</dd></div>
         <div class="meta-row"><dt>Framework</dt><dd>TOU:Mira 1.6.3</dd></div>
         <div class="meta-row"><dt>Role</dt><dd>3 niestandardowe</dd></div>
@@ -700,6 +700,28 @@ footer a:hover { color: var(--primary-hover); }
     <section id="changelog" style="margin-top:28px;">
       <h2 class="section-head">Changelog</h2>
       <div>
+
+        <div class="changelog-entry">
+          <p class="changelog-version">v1.0.5</p>
+          <p class="changelog-date">2026-06-29</p>
+          <ul class="changelog-items">
+            <li>Naprawa krytycznego bledu: ZIP bez podfolderu kopiował cały dysk C:\ do folderu gry</li>
+            <li>Bezpieczne wyodrebnianie archiwum — null-safe $src, kopiowanie z wlasciwego podfolderu</li>
+            <li>Tryb -Silent w instalatorze: zero pytan, instalacja jednym podwojnym kliknieciem</li>
+            <li>Zainstaluj.bat przekazuje -Silent automatycznie</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <p class="changelog-version">v1.0.4</p>
+          <p class="changelog-date">2026-06-29</p>
+          <ul class="changelog-items">
+            <li>Wsparcie dla Epic Games — instalator wykrywa Among Us w Epic Games Launcher</li>
+            <li>Wybor folderu instalacji: Games (domyslnie), Pulpit lub wlasna sciezka</li>
+            <li>Sciezka instalacji zapisywana do %LOCALAPPDATA%\TouTobiaszEdition\install_path.txt</li>
+            <li>Sprawdz aktualizacje.bat w folderze gry — reczne uruchomienie updatera</li>
+          </ul>
+        </div>
 
         <div class="changelog-entry">
           <p class="changelog-version">v1.0.3</p>

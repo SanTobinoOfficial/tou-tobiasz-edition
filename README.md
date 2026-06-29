@@ -98,6 +98,18 @@ Zero interwencji z Twojej strony.
 
 ## Changelog
 
+### v1.0.5 — 2026-06-29
+- Naprawa krytycznego bledu: ZIP bez podfolderu kopiowal caly dysk C:\ do folderu gry
+- Bezpieczne wyodrebnianie archiwum — null-safe $src, kopiowanie z wlasciwego podfolderu
+- Tryb -Silent w instalatorze: zero pytan, instalacja jednym podwojnym kliknieciem
+- Zainstaluj.bat przekazuje -Silent automatycznie
+
+### v1.0.4 — 2026-06-29
+- Wsparcie dla Epic Games — instalator wykrywa Among Us w Epic Games Launcher
+- Wybor folderu instalacji: Games (domyslnie), Pulpit lub wlasna sciezka
+- Sciezka instalacji zapisywana do %LOCALAPPDATA%\TouTobiaszEdition\install_path.txt
+- Sprawdz aktualizacje.bat w folderze gry — reczne uruchomienie updatera
+
 ### v1.0.3 — 2026-06-29
 - Naprawa bledu kompilacji roli Adam (CS0246, CS0115, CS0426)
 - Poprawny namespace Reactor dla RPC, poprawna metoda CanUse() w buttonie, NetworkedPlayerInfo w patchu wizji
