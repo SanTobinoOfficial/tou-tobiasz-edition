@@ -1,4 +1,4 @@
-# ToU Tobiasz Edition — Autoinstalator
+﻿# ToU Tobiasz Edition — Autoinstalator
 param([switch]$Silent)
 
 $ErrorActionPreference = "Stop"
