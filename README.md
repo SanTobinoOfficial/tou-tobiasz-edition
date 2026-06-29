@@ -25,31 +25,25 @@ Maly i szybki. Wysyla ptaki by wykrywac impostorów - ptak wraca z wynikiem ziel
 
 ## Instalacja
 
-### Krok 1 - Pobierz autoinstalator
+### Krok 1 - Pobierz Zainstaluj.bat
 
-Pobierz z najnowszego release:
-https://github.com/SanTobinoOfficial/tou-tobiasz-edition/releases/latest/download/install.ps1
+https://github.com/SanTobinoOfficial/tou-tobiasz-edition/releases/latest/download/Zainstaluj.bat
 
-### Krok 2 - Odblokuj plik (wazne!)
+### Krok 2 - Kliknij dwukrotnie
 
-Windows blokuje skrypty pobrane z internetu. Przed uruchomieniem:
+Dwukrotnie kliknij pobrany plik `Zainstaluj.bat`.
 
-**Opcja A** — Prawym przyciskiem na `install.ps1` → **Wlasciwosci** → zaznacz **"Odblokuj"** → OK
+Jesli pojawi sie ostrzezenie SmartScreen → **"Wiecej informacji"** → **"Uruchom mimo to"**.
 
-**Opcja B** — Wklej do PowerShell:
-```powershell
-Unblock-File "$env:USERPROFILE\Downloads\install.ps1"
-```
-
-### Krok 3 - Uruchom PowerShell
-
-Prawym przyciskiem na `install.ps1` -> "Uruchom za pomoca programu PowerShell"
-
-Skrypt automatycznie:
+Instalator automatycznie:
 - Kopiuje Among Us do osobnego folderu (vanilla pozostaje nienaruszona)
 - Instaluje Town of Us: Mira 1.6.3
 - Pobiera mod (TouTobiaszEdition.dll)
 - Konfiguruje automatyczne aktualizacje (Windows Task Scheduler)
+
+### Krok 3 - Poczekaj ok. 2 minuty
+
+Mozna wybrac folder instalacji (Games / Pulpit / wlasna sciezka).
 
 ### Krok 4 - Uruchom gre
 

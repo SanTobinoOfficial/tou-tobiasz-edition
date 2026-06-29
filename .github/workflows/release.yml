@@ -49,5 +49,6 @@ jobs:
             2. Wrzuć do `BepInEx/plugins/` w folderze Among Us z TOU:Mira
           files: |
             TouTobiaszEdition.dll
+            Zainstaluj.bat
             install.ps1
             update.ps1
