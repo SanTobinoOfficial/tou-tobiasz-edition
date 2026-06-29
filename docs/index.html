@@ -625,19 +625,28 @@ footer a:hover { color: var(--primary-hover); }
         <li>
           <span class="step-n">2</span>
           <div class="step-body">
-            <p class="step-title">Uruchom PowerShell</p>
-            <p class="step-desc">Prawym przyciskiem na pobrany plik &rarr; "Uruchom za pomoca programu PowerShell".</p>
+            <p class="step-title">Odblokuj plik (wazne!)</p>
+            <p class="step-desc">Prawym przyciskiem na <code>install.ps1</code> &rarr; <b>Wlasciwosci</b> &rarr; zaznacz <b>"Odblokuj"</b> na dole &rarr; OK.<br>
+            <i>Lub wklej do PowerShell:</i><br>
+            <code>Unblock-File "$env:USERPROFILE\Downloads\install.ps1"</code></p>
           </div>
         </li>
         <li>
           <span class="step-n">3</span>
+          <div class="step-body">
+            <p class="step-title">Uruchom PowerShell</p>
+            <p class="step-desc">Prawym przyciskiem na <code>install.ps1</code> &rarr; "Uruchom za pomoca programu PowerShell".</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-n">4</span>
           <div class="step-body">
             <p class="step-title">Poczekaj na instalacje (ok. 2 min)</p>
             <p class="step-desc">Skrypt skopiuje Among Us, zainstaluje TOU:Mira 1.6.3, pobierze mod i skonfiguruje auto-aktualizacje.</p>
           </div>
         </li>
         <li>
-          <span class="step-n">4</span>
+          <span class="step-n">5</span>
           <div class="step-body">
             <p class="step-title">Uruchom gre</p>
             <p class="step-desc">

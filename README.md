@@ -30,7 +30,18 @@ Maly i szybki. Wysyla ptaki by wykrywac impostorów - ptak wraca z wynikiem ziel
 Pobierz z najnowszego release:
 https://github.com/SanTobinoOfficial/tou-tobiasz-edition/releases/latest/download/install.ps1
 
-### Krok 2 - Uruchom PowerShell
+### Krok 2 - Odblokuj plik (wazne!)
+
+Windows blokuje skrypty pobrane z internetu. Przed uruchomieniem:
+
+**Opcja A** — Prawym przyciskiem na `install.ps1` → **Wlasciwosci** → zaznacz **"Odblokuj"** → OK
+
+**Opcja B** — Wklej do PowerShell:
+```powershell
+Unblock-File "$env:USERPROFILE\Downloads\install.ps1"
+```
+
+### Krok 3 - Uruchom PowerShell
 
 Prawym przyciskiem na `install.ps1` -> "Uruchom za pomoca programu PowerShell"
 
@@ -40,11 +51,11 @@ Skrypt automatycznie:
 - Pobiera mod (TouTobiaszEdition.dll)
 - Konfiguruje automatyczne aktualizacje (Windows Task Scheduler)
 
-### Krok 3 - Uruchom gre
+### Krok 4 - Uruchom gre
 
 Uruchom `C:\Games\Among Us - Tobiasz Edition\Among Us.exe`
 
-> **Wazne:** Uruchamiaj bezposrednio przez `.exe`, NIE przez Steam!
+> **Wazne:** Uruchamiaj bezposrednio przez `.exe`, NIE przez Steam/Epic!
 
 ---
 
