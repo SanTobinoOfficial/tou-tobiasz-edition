@@ -28,10 +28,9 @@ public static class AdamSmokeTimerPatch
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius))]
 public static class AdamVisionPatch
 {
-    public static void Postfix(ref float __result, GameData.PlayerInfo player)
+    public static void Postfix(ref float __result, NetworkedPlayerInfo player)
     {
         if (player == null || player.IsDead) return;
-        // Impostors see through the smoke.
         if (player.Role != null && player.Role.IsImpostor) return;
 
         var smokeRadius = OptionGroupSingleton<AdamOptions>.Instance.SmokeRadius;

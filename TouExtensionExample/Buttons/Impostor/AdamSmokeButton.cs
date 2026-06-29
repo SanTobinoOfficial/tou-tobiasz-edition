@@ -17,9 +17,9 @@ public sealed class AdamSmokeButton : TownOfUsRoleButton<AdamRole>
     public override float Cooldown => OptionGroupSingleton<AdamOptions>.Instance.SmokeCooldown;
     public override LoadableAsset<Sprite>? Sprite => null;
 
-    protected override bool IsButtonActive()
+    public override bool CanUse()
     {
-        return Role != null && !Role.SmokeActive;
+        return base.CanUse() && Role != null && !Role.SmokeActive;
     }
 
     protected override void OnClick()

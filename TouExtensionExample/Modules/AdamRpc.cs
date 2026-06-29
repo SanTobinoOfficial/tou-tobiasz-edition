@@ -1,4 +1,4 @@
-using MiraAPI.Networking;
+using Reactor.Networking.Attributes;
 using TouExtensionExample.Roles.Impostor;
 
 namespace TouExtensionExample.Modules;
