@@ -537,7 +537,7 @@ footer a:hover { color: var(--primary-hover); }
          class="btn-ghost" target="_blank" rel="noopener">Wszystkie pliki na GitHub</a>
       <hr class="panel-divider">
       <dl class="meta-list">
-        <div class="meta-row"><dt>Wersja</dt><dd>1.0.6</dd></div>
+        <div class="meta-row"><dt>Wersja</dt><dd>1.0.7</dd></div>
         <div class="meta-row"><dt>Gra bazowa</dt><dd>Among Us</dd></div>
         <div class="meta-row"><dt>Framework</dt><dd>TOU:Mira 1.6.3</dd></div>
         <div class="meta-row"><dt>Role</dt><dd>3 niestandardowe</dd></div>
@@ -641,7 +641,7 @@ footer a:hover { color: var(--primary-hover); }
           <div class="step-body">
             <p class="step-title">Uruchom gre</p>
             <p class="step-desc">
-              Uruchom <code>C:\Games\Among Us - Tobiasz Edition\Among Us.exe</code> (lub w wybranym folderze).<br>
+              Uruchom <code>Among Us - Tobiasz Edition\Among Us.exe</code> z Pulpitu (lub wybranego folderu).<br>
               <b>NIE przez Steam/Epic</b> — bezposrednio przez .exe!
             </p>
           </div>
@@ -700,6 +700,16 @@ footer a:hover { color: var(--primary-hover); }
     <section id="changelog" style="margin-top:28px;">
       <h2 class="section-head">Changelog</h2>
       <div>
+
+        <div class="changelog-entry">
+          <p class="changelog-version">v1.0.7</p>
+          <p class="changelog-date">2026-06-29</p>
+          <ul class="changelog-items">
+            <li>Naprawa bledu enkodowania Unicode w instalatorze (UTF-8 BOM)</li>
+            <li>PowerShell 5.1 bez BOM czyta plik jako ANSI — ramki i spinner wyswietlaly sie jako smieci</li>
+            <li>install.ps1 zapisany z BOM; Zainstaluj.bat dodaje BOM po pobraniu</li>
+          </ul>
+        </div>
 
         <div class="changelog-entry">
           <p class="changelog-version">v1.0.6</p>
@@ -799,7 +809,7 @@ footer a:hover { color: var(--primary-hover); }
       </div>
       <div class="sysreq-row">
         <span class="sr-label">Gra</span>
-        <span class="sr-val">Among Us (Steam)</span>
+        <span class="sr-val">Among Us (Steam lub Epic Games)</span>
       </div>
       <div class="sysreq-row">
         <span class="sr-label">Wersja AU</span>

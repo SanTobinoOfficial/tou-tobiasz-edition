@@ -1,7 +1,7 @@
 # ToU Tobiasz Edition
 
 Custom roles mod dla **Among Us** oparty na Town of Us: Mira.
-Dwie nowe role stworzone na podstawie prawdziwych osob: Emil i Jonasz.
+Trzy unikalne role stworzone na podstawie prawdziwych osob: Emil, Jonasz i Adam.
 
 **Strona pobierania:** https://santobinoofficial.github.io/tou-tobiasz-edition/
 
@@ -20,6 +20,12 @@ Powolny i glodny. Zabija graczy i musi pozrec kazde cialo zanim przejdzie do nas
 Maly i szybki. Wysyla ptaki by wykrywac impostorów - ptak wraca z wynikiem zielonym (niewinny) lub czerwonym (impostor). Moze uzyc Dasha by gwaltownie przyspieszyc i uciec z zagrozenia.
 
 **Zdolnosci:** Ptak - wykrywanie, Dash - ucieczka, Zwiekszony speed
+
+### Adam — Impostor Killing
+
+Dymi cala okolice. Aktywuje chmure dymu wokol siebie, ktora drastycznie redukuje widzenie pobliskich Crewmate'ow. Impostorzy widza przez dym normalnie. Uzyj dymu by ukryc zabojstwo lub uciec.
+
+**Zdolnosci:** Dym - slepota (20% wizji), Wentylacja, Zabijanie
 
 ---
 
@@ -43,11 +49,12 @@ Instalator automatycznie:
 
 ### Krok 3 - Poczekaj ok. 2 minuty
 
-Mozna wybrac folder instalacji (Games / Pulpit / wlasna sciezka).
+Instalator dziala w pelni automatycznie. Domyslnie instaluje na Pulpit.
+Uruchamiajac `install.ps1` bezposrednio (bez Zainstaluj.bat) mozna wybrac folder strzalkami.
 
 ### Krok 4 - Uruchom gre
 
-Uruchom `C:\Games\Among Us - Tobiasz Edition\Among Us.exe`
+Uruchom `Among Us - Tobiasz Edition\Among Us.exe` z Pulpitu (lub wybranego folderu).
 
 > **Wazne:** Uruchamiaj bezposrednio przez `.exe`, NIE przez Steam/Epic!
 
@@ -57,29 +64,29 @@ Uruchom `C:\Games\Among Us - Tobiasz Edition\Among Us.exe`
 
 | Kopia | Lokalizacja | Opis |
 |-------|-------------|------|
-| Vanilla | Steam | Normalny Among Us bez modow, uruchamiaj przez Steam jak zawsze |
+| Vanilla | Steam / Epic | Normalny Among Us bez modow, uruchamiaj przez launcher jak zawsze |
 | TOU:Mira | Twoj folder | Jezeli masz wlasna instalacje TOU, pozostaje w swoim folderze |
-| Tobiasz Edition | `C:\Games\Among Us - Tobiasz Edition\` | Nasz mod, oddzielny folder |
+| Tobiasz Edition | Pulpit (domyslnie) | Nasz mod, oddzielny folder, uruchamiaj bezposrednio .exe |
 
 ---
 
 ## Automatyczne aktualizacje
 
 Skrypt instalacyjny rejestruje zadanie `"ToU Tobiasz Edition Updater"` w Windows Task Scheduler.
-Przy kazdym logowaniu do systemu (z 30-sekundowym opoznieniem) sprawdza GitHub API
-czy dostepna jest nowsza wersja moda.
+Przy kazdym logowaniu do systemu sprawdza GitHub API czy dostepna jest nowsza wersja moda.
 
 Jezeli tak - pobiera nowy DLL i pokazuje powiadomienie Windows Toast.
-Jezeli Among Us jest uruchomiony - wyswietla komunikat "Zamknij gre, aby zainstalowac".
 Zero interwencji z Twojej strony.
 
 | Parametr | Wartosc |
 |----------|---------|
-| Wyzwalacz | Przy logowaniu do systemu (opoznienie 30s) |
+| Wyzwalacz | Przy logowaniu do systemu |
 | Sprawdza | GitHub API - najnowszy release tag |
 | Aktualizuje | Tylko TouTobiaszEdition.dll |
 | Powiadamia | Windows Toast Notification |
 | Zadanie | "ToU Tobiasz Edition Updater" w Task Scheduler |
+
+Mozna tez recznie sprawdzic aktualizacje — uruchom `Sprawdz aktualizacje.bat` z folderu gry.
 
 ---
 
@@ -88,7 +95,7 @@ Zero interwencji z Twojej strony.
 | | |
 |-|--|
 | System | Windows 10/11 (x64) |
-| Gra | Among Us (Steam) |
+| Gra | Among Us (Steam lub Epic Games) |
 | Wersja AU | 2026.6.5 lub nowsza |
 | TOU:Mira | 1.6.3 (instalowany automatycznie) |
 | Dysk | ok. 2 GB wolnego miejsca |
@@ -98,31 +105,36 @@ Zero interwencji z Twojej strony.
 
 ## Changelog
 
+### v1.0.7 — 2026-06-29
+- Naprawa bledu enkodowania Unicode w instalatorze (UTF-8 BOM)
+- PowerShell 5.1 czyta plik jako ANSI bez BOM — znaki ramek i spinner wyswietlaly sie jako smieci
+- install.ps1 zapisany z BOM (EF BB BF); Zainstaluj.bat dodaje BOM po pobraniu
+
 ### v1.0.6 — 2026-06-29
 - Piekny instalator TUI ze spinnerem pobierania i ramkami w stylu OpenCode
-- Menu nawigowane strzalkami (strzalki gora/dol + Enter) — wybor launchera i folderu
-- Domyslna lokalizacja zmieniona na Pulpit zamiast C:\Games
+- Menu nawigowane strzalkami (gora/dol + Enter) — wybor launchera i folderu instalacji
+- Domyslna lokalizacja zmieniona na Pulpit
 - Tryb -Silent (Zainstaluj.bat): zero pytan, pelna automatyzacja
 
 ### v1.0.5 — 2026-06-29
 - Naprawa krytycznego bledu: ZIP bez podfolderu kopiowal caly dysk C:\ do folderu gry
-- Bezpieczne wyodrebnianie archiwum — null-safe $src, kopiowanie z wlasciwego podfolderu
-- Tryb -Silent w instalatorze: zero pytan, instalacja jednym podwojnym kliknieciem
+- Bezpieczne wyodrebnianie archiwum — null-safe $src
+- Tryb -Silent w instalatorze
 - Zainstaluj.bat przekazuje -Silent automatycznie
 
 ### v1.0.4 — 2026-06-29
 - Wsparcie dla Epic Games — instalator wykrywa Among Us w Epic Games Launcher
-- Wybor folderu instalacji: Games (domyslnie), Pulpit lub wlasna sciezka
+- Wybor folderu instalacji: Games, Pulpit lub wlasna sciezka
 - Sciezka instalacji zapisywana do %LOCALAPPDATA%\TouTobiaszEdition\install_path.txt
 - Sprawdz aktualizacje.bat w folderze gry — reczne uruchomienie updatera
 
 ### v1.0.3 — 2026-06-29
-- Naprawa bledu kompilacji roli Adam (CS0246, CS0115, CS0426)
-- Poprawny namespace Reactor dla RPC, poprawna metoda CanUse() w buttonie, NetworkedPlayerInfo w patchu wizji
+- Naprawa bledow kompilacji roli Adam (CS0246, CS0115, CS0426)
+- Poprawny namespace Reactor dla RPC, metoda CanUse() w buttonie, NetworkedPlayerInfo w patchu wizji
 
 ### v1.0.2 — 2026-06-29
-- Nowa rola Adam (Impostor): zdolnosc Dym redukujaca widzenie pobliskim Crewmate'om do 20%
-- Dym dziala w promieniu konfigurowalnym (domyslnie 5 jednostek), trwa 8 sekund, cooldown 25s
+- Nowa rola Adam (Impostor Killing): zdolnosc Dym redukujaca widzenie pobliskim Crewmate'om do 20%
+- Dym w konfigurowalnym promieniu (domyslnie 5j), trwa 8s, cooldown 25s
 - Impostorzy widza przez dym normalnie
 - AdamOptions: SmokeCooldown, SmokeDuration, SmokeRadius, VisionMultiplier
 
@@ -131,7 +143,6 @@ Zero interwencji z Twojej strony.
 - Automatyczne aktualizacje przez Windows Task Scheduler
 - `update.ps1` - updater pobierany razem z modem do folderu instalacji
 - `install.ps1` - rejestruje zadanie w Task Scheduler, zapisuje `tou_version.txt`
-- README zsynchronizowany ze strona
 
 ### v1.0.0 — 2026-06-29
 - Pierwsze wydanie
