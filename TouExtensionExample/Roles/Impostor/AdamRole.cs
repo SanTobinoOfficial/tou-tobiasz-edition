@@ -27,6 +27,7 @@ public sealed class AdamRole(IntPtr cppPtr)
     public Color RoleColor => TouExampleColors.Adam;
     public ModdedRoleTeams Team => ModdedRoleTeams.Impostor;
     public RoleAlignment RoleAlignment => RoleAlignment.ImpostorKilling;
+    public bool HasImpostorVision => true;
 
     public CustomRoleConfiguration Configuration => new(this)
     {

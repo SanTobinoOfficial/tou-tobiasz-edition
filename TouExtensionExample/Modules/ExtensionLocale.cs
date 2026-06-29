@@ -16,7 +16,7 @@ public static class ExtensionLocale
         foreach (var locale in TouLocale.LangList)
         {
             using var resourceStream =
-                assembly.GetManifestResourceStream("TouExtensionExample.Resources.Locale." + locale.Value);
+                assembly.GetManifestResourceStream("TouCustomRoles.Resources.Locale." + locale.Value);
             if (resourceStream == null)
             {
                 LocaleLogger.LogError($"Example Language is not added: {locale.Key.ToDisplayString()}");

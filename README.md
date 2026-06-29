@@ -105,6 +105,11 @@ Mozna tez recznie sprawdzic aktualizacje — uruchom `Sprawdz aktualizacje.bat` 
 
 ## Changelog
 
+### v1.0.8 — 2026-06-29
+- Naprawa: rola Adam nie pojawiala sie w grze — brakujaca wlasciwosc HasImpostorVision w AdamRole
+- Naprawa: locale nie ladowalo sie — bledny prefix zasobow w ExtensionLocale (TouExtensionExample vs TouCustomRoles)
+- Rola Sentinel wyswietla sie teraz poprawnie jako "Sentinel" zamiast STRMISS_ExampleRoleSentinel
+
 ### v1.0.7 — 2026-06-29
 - Naprawa bledu enkodowania Unicode w instalatorze (UTF-8 BOM)
 - PowerShell 5.1 czyta plik jako ANSI bez BOM — znaki ramek i spinner wyswietlaly sie jako smieci
