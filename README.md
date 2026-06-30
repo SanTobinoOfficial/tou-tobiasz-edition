@@ -105,7 +105,13 @@ Mozna tez recznie sprawdzic aktualizacje — uruchom `Sprawdz aktualizacje.bat` 
 
 ## Changelog
 
-### v1.0.10 — 2026-06-29
+### v1.0.11 — 2026-06-30
+- Naprawa crashu: Reactor 2.5.0 nie dziala z Among Us 2026.6.5 (zmiana wewnetrznych typow gry)
+- Instalator pobiera teraz Reactor 2.5.1 ktory naprawia wsparcie dla AU 2026.6.5
+- Kompilacja zaktualizowana: Reactor 2.5.1 + MiraAPI 0.4.1
+- Usunieto duplikat TouExtensionExample.dll z folderu pluginow
+
+### v1.0.10 — 2026-06-30
 - Naprawa instalatora: TOU:Mira 1.6.3 stable nie ma zipa — tylko DLL
 - Instalator teraz pobiera zip 1.6.2 (pelny setup BepInEx) + DLL 1.6.3 osobno
 

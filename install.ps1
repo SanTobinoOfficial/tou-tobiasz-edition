@@ -7,8 +7,9 @@ $ProgressPreference    = "SilentlyContinue"
 
 $REPO        = "SanTobinoOfficial/tou-tobiasz-edition"
 $GAME_NAME   = "Among Us - Tobiasz Edition"
-$TOU_ZIP_URL = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.2/TouMira-v1.6.2-x86-steam-itch.zip"
-$TOU_DLL_URL = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.3/TownOfUsMira.dll"
+$TOU_ZIP_URL     = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.2/TouMira-v1.6.2-x86-steam-itch.zip"
+$TOU_DLL_URL     = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.3/TownOfUsMira.dll"
+$REACTOR_DLL_URL = "https://github.com/NuclearPowered/Reactor/releases/download/2.5.1/Reactor.dll"
 $API_URL     = "https://api.github.com/repos/$REPO/releases/latest"
 $TMP         = "$env:TEMP\TouInstall_$(Get-Random)"
 $CONFIG_DIR  = "$env:LOCALAPPDATA\TouTobiaszEdition"
@@ -226,8 +227,9 @@ Copy-Item "$src\*" $INSTALL_DIR -Recurse -Force
 
 $pluginsDirMira = "$INSTALL_DIR\BepInEx\plugins"
 New-Item -ItemType Directory -Path $pluginsDirMira -Force | Out-Null
-dl $TOU_DLL_URL "$pluginsDirMira\TownOfUsMira.dll" "TownOfUsMira.dll v1.6.3"
-ok "TOU:Mira 1.6.3 zainstalowany"
+dl $TOU_DLL_URL     "$pluginsDirMira\TownOfUsMira.dll" "TownOfUsMira.dll v1.6.3"
+dl $REACTOR_DLL_URL "$pluginsDirMira\Reactor.dll"      "Reactor.dll v2.5.1"
+ok "TOU:Mira 1.6.3 + Reactor 2.5.1 zainstalowany"
 
 # 5 — mod DLL + updater
 step 5 5 "ToU Tobiasz Edition + auto-updater"
