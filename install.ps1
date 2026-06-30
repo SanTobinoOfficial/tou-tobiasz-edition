@@ -7,7 +7,8 @@ $ProgressPreference    = "SilentlyContinue"
 
 $REPO        = "SanTobinoOfficial/tou-tobiasz-edition"
 $GAME_NAME   = "Among Us - Tobiasz Edition"
-$TOU_URL     = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.3/TouMirav1.6.3-x86-steam-itch.zip"
+$TOU_ZIP_URL = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.2/TouMira-v1.6.2-x86-steam-itch.zip"
+$TOU_DLL_URL = "https://github.com/AU-Avengers/TOU-Mira/releases/download/1.6.3/TownOfUsMira.dll"
 $API_URL     = "https://api.github.com/repos/$REPO/releases/latest"
 $TMP         = "$env:TEMP\TouInstall_$(Get-Random)"
 $CONFIG_DIR  = "$env:LOCALAPPDATA\TouTobiaszEdition"
@@ -216,13 +217,17 @@ step 4 5 "Town of Us: Mira 1.6.3"
 New-Item -ItemType Directory -Path $TMP -Force | Out-Null
 $zipPath     = "$TMP\toumira.zip"
 $extractPath = "$TMP\toumira"
-dl $TOU_URL $zipPath "TouMirav1.6.3-x86-steam-itch.zip"
+dl $TOU_ZIP_URL $zipPath "TouMira-v1.6.2-x86-steam-itch.zip"
 inf "Rozpakowywanie..."
 Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
 $subDir = Get-ChildItem $extractPath -Directory | Select-Object -First 1
 $src    = if ($null -ne $subDir) { $subDir.FullName } else { $extractPath }
 Copy-Item "$src\*" $INSTALL_DIR -Recurse -Force
-ok "TOU:Mira zainstalowany"
+
+$pluginsDirMira = "$INSTALL_DIR\BepInEx\plugins"
+New-Item -ItemType Directory -Path $pluginsDirMira -Force | Out-Null
+dl $TOU_DLL_URL "$pluginsDirMira\TownOfUsMira.dll" "TownOfUsMira.dll v1.6.3"
+ok "TOU:Mira 1.6.3 zainstalowany"
 
 # 5 — mod DLL + updater
 step 5 5 "ToU Tobiasz Edition + auto-updater"

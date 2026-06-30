@@ -105,6 +105,10 @@ Mozna tez recznie sprawdzic aktualizacje — uruchom `Sprawdz aktualizacje.bat` 
 
 ## Changelog
 
+### v1.0.10 — 2026-06-29
+- Naprawa instalatora: TOU:Mira 1.6.3 stable nie ma zipa — tylko DLL
+- Instalator teraz pobiera zip 1.6.2 (pelny setup BepInEx) + DLL 1.6.3 osobno
+
 ### v1.0.9 — 2026-06-29
 - Naprawa: okno Zainstaluj.bat zamykalo sie natychmiast po bledzie — bledy znikaly zanim mozna bylo je przeczytac
 - Dodano pause po kazdym bledzie i na koncu instalacji
